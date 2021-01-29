@@ -39,6 +39,7 @@ log.debug "setSource: ${setSource}"
 log.debug "IP: ${IP}"
 log.debug "logEnable: ${logEnable}"
 
+//Set the mode of the DreamScreen
 def setMode(String setMode) {
 	if (logEnable) {
 		log.debug "setMode: ${setMode}"
@@ -63,6 +64,7 @@ def setMode(String setMode) {
 	buildAndSendPacket(3, 1, payload)
 }
 
+//Set the source of the DreamScreen
 def setSource(String setSource) {
 		if (logEnable) {
 		log.debug "setSource in method: ${setSource}"
@@ -125,10 +127,7 @@ def crcTable = [
 		131, 222, 217, 208, 215, 194,
 		197, 204, 203, 230, 225, 232,
 		239, 250, 253, 244, 243
-]
-
-
-//no errors until this section with error beginning on for and range loop
+] // crcTable is grabbed from a PDF from DreamScreen that describes UDP process
 
 def buildAndSendPacket(upperC, lowerC, int payload){
 	def resp = [] //starts the response object
@@ -151,8 +150,9 @@ def buildAndSendPacket(upperC, lowerC, int payload){
 	}
 	resp.add(crc)
 	// resp = byte [resp]//forms response object into a byte to be sent out
+
+	//This area seems broken currently
 	String respBytes = hubitat.helper.HexUtils.intArrayToHexString(resp, 1)
-//	sock.sendto(resp, endpoint)  //Does this do anything currently? It appears no.
 	def myhubAction = new hubitat.device.HubAction(respBytes, hubitat.device.Protocol.LAN, [type: HubAction.Type.LAN_TYPE_UDPCLIENT, destinationAddress: "${IP}:8888"] )
 	// httpPost(uri: "${IP}:8888",path: "",body:"${resp}")
 	sendHubCommand(myhubAction)
